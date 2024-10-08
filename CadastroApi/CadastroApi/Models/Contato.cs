@@ -5,7 +5,7 @@ namespace CadastroApi.Models;
 public class Contato
 {
     [Key]
-    public Guid ContatoId { get; set; }
+    public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Nome é obrigatório")]
     [MaxLength(100)]
