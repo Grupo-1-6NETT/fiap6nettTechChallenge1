@@ -9,10 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var stringDbConnection = builder.Configuration.GetConnectionString("DefaultConnection");
-
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(stringDbConnection, ServerVersion.AutoDetect(stringDbConnection)));
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
 
 builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
