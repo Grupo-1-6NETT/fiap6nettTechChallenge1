@@ -10,7 +10,7 @@ public class ContatoRepository : Repository<Contato>, IContatoRepository
     {
     }
 
-    public async Task<IEnumerable<Contato>> GetByDDDAsync(char ddd)
+    public async Task<IEnumerable<Contato>> GetByDDDAsync(string ddd)
     {
         return await _context.Contatos.AsNoTracking().Where(c => c.DDD == ddd).ToListAsync();
     }

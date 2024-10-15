@@ -17,7 +17,7 @@ public class Contato
 
     [Required(ErrorMessage = "DDD é obrigatório")]
     [StringLength(2, ErrorMessage = "DDD com formato inválido")]
-    public char DDD { get; set; }
+    public string DDD { get; set; }
 
     [Required(ErrorMessage = "Email é obrigatório")]
     [EmailAddress(ErrorMessage = "Formato de email inválido")]

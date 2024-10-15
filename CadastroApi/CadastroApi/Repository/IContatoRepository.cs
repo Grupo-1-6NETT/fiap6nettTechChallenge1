@@ -4,5 +4,5 @@ namespace CadastroApi.Repository;
 
 public interface IContatoRepository : IRepository<Contato>
 {
-    Task<IEnumerable<Contato>> GetByDDDAsync(char ddd);
+    Task<IEnumerable<Contato>> GetByDDDAsync(string ddd);
 }
