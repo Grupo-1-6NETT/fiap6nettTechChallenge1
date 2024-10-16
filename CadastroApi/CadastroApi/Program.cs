@@ -1,6 +1,8 @@
+using CadastroApi.Application;
 using CadastroApi.Data;
 using CadastroApi.Repository;
 using CadastroApi.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
