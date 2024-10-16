@@ -14,4 +14,9 @@ public class ContatoRepository : Repository<Contato>, IContatoRepository
     {
         return await _context.Contatos.AsNoTracking().Where(c => c.DDD == ddd).ToListAsync();
     }
+    public async Task AddContatoAsync(Contato contato)
+    {
+        await _context.Contatos.AddAsync(contato);
+        await _context.SaveChangesAsync();
+    }
 }
