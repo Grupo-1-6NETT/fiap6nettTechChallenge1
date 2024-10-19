@@ -10,10 +10,39 @@ public class ContatoRepository : Repository<Contato>, IContatoRepository
     {
     }
 
-    public async Task<IEnumerable<Contato>> GetByDDDAsync(string ddd)
+    public async Task<IEnumerable<Contato>> GetAllAsync(int? pageIndex, int? pageSize)
     {
-        return await _context.Contatos.AsNoTracking().Where(c => c.DDD == ddd).ToListAsync();
+        var query = _context.Contatos
+            .AsNoTracking()
+            .OrderBy(c => c.Nome)
+            .AsQueryable();
+
+        if (pageIndex is null || pageSize is null)
+            return await query.ToListAsync();
+
+        return await query
+            .Skip((pageIndex.Value - 1) * pageSize.Value)
+            .Take(pageSize.Value)
+            .ToListAsync();
     }
+
+    public async Task<IEnumerable<Contato>> GetByDDDAsync(string ddd, int? pageIndex, int? pageSize)
+    {
+        var query = _context.Contatos
+            .AsNoTracking()
+            .Where(c => c.DDD == ddd)
+            .OrderBy(c => c.Nome)
+            .AsQueryable();
+
+        if (pageIndex is null || pageSize is null)
+            return await query.ToListAsync();
+
+        return await query
+            .Skip((pageIndex.Value - 1) * pageSize.Value)
+            .Take(pageSize.Value)
+            .ToListAsync();
+    }
+
     public async Task AddContatoAsync(Contato contato)
     {
         await _context.Contatos.AddAsync(contato);
