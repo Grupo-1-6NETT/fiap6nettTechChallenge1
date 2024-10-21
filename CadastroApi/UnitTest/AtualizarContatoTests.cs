@@ -4,7 +4,7 @@ using CadastroApi.Repository;
 using FluentAssertions;
 using Moq;
 
-namespace AtualizarContato
+namespace UnitTest
 {
     public class AtualizarContatoTests
     {
