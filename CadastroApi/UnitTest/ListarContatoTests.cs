@@ -32,5 +32,21 @@ namespace ListarContato
             result.Should().BeEquivalentTo(contatos); 
             _contatoRepositoryMock.Verify(repo => repo.GetAllAsync(), Times.Once);
         }
+
+        [Fact]
+        public async Task ListarTodosContatos_DDDInformado_DeveRetornarListaDeContatos()
+        {
+            var contatos = new List<Contato>
+        {
+            new Contato { Nome = "Batman", Telefone = "999999999", DDD = "11", Email = "batman@gotham.com" },
+            new Contato { Nome = "Robin", Telefone = "999999999", DDD = "11", Email = "robin@gotham.com" },
+        };
+            _contatoRepositoryMock.Setup(repo => repo.GetByDDDAsync(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(contatos);
+
+            var result = await _handler.Handle(new ListarContatoQuery { DDD = "11"}, CancellationToken.None);
+
+            result.Should().BeEquivalentTo(contatos);
+            _contatoRepositoryMock.Verify(repo => repo.GetByDDDAsync("11", null, null), Times.Once);
+        }
     }
 }

@@ -18,12 +18,21 @@ public class ContatosController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary>
+    /// Lista os Contatos cadastrados, ordenados por nome, que correspondem aos parâmetros informados
+    /// </summary>    
+    /// <param name="ddd">Filtra os contatos cujo telefone contenham o DDD informado</param>
+    /// <param name="pagina">Informe o número de página para ignorar os contatos de páginas anteriores. Se não informado, todos os contatos serão exibidos</param>
+    /// <param name="resultadosPorPagina">Número de contatos a serem exibidos para a <paramref name="pagina"/> informada. Se não informado, todos os contatos serão exibidos</param>
+    /// <returns>A lista de Contatos correspodentes à pesquisa</returns>
+    /// <response code="200">Pesquisa realizada com sucesso</response>
+    /// <response code="500">Erro inesperado</response>
     [HttpGet]
-    public async Task<IActionResult> ListarContatos()
+    public async Task<IActionResult> ListarContatos(string? ddd = null, int? pagina = null, int? resultadosPorPagina = null)
     {
         try
         {
-            var query = new ListarContatoQuery();
+            var query = new ListarContatoQuery { DDD = ddd, PageIndex = pagina, PageSize = resultadosPorPagina};
             var contatos = await _mediator.Send(query);
             return Ok(contatos);
         }

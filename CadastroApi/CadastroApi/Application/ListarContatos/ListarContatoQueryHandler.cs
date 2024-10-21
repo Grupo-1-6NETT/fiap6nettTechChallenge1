@@ -15,7 +15,10 @@ namespace CadastroApi.Application
 
         public async Task<IEnumerable<Contato>> Handle(ListarContatoQuery query, CancellationToken cancellationToken)
         {
-            return await _contatoRepository.GetAllAsync();
+            if(string.IsNullOrEmpty(query.DDD))
+                return await _contatoRepository.GetAllAsync(query.PageIndex, query.PageSize);
+
+            return await _contatoRepository.GetByDDDAsync(query.DDD, query.PageIndex, query.PageSize);
         }
     }
 }
