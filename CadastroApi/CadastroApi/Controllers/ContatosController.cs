@@ -1,4 +1,5 @@
 ﻿using CadastroApi.Application;
+using CadastroApi.Application.RemoverContato;
 using CadastroApi.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -94,5 +95,33 @@ public class ContatosController : ControllerBase
         {
             return BadRequest(new { Error = ex.Message });
         }
+    }
+
+    /// <summary>
+    /// Remove o contato na base de dados com o ID informado
+    /// </summary>
+    /// <param name="id">O ID do contato a ser removido</param>
+    /// <returns>Resultado da operação de remoção</returns>
+    /// <response code="200">Contato removido com sucesso</response>
+    /// <response code="404">Contato não encontrado</response>
+    /// <response code="500">Erro inesperado</response>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> RemoverContato(Guid id)
+    {
+        try
+        {
+            var command = new RemoverContatoCommand(id);
+            await _mediator.Send(command);
+            return Ok($"Contato com id {id} removido com sucesso."); 
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound($"Contato com id {id} não encontrado.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Error = "Ocorreu um erro inesperado.", Details = ex.Message });
+        }
+
     }
 }

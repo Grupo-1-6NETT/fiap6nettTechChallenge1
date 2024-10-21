@@ -31,10 +31,14 @@ public class Repository<T> : IRepository<T> where T : class
         _context.Set<T>().Update(entity);
         _context.SaveChanges();
     }
-    public void Delete(T entity)
+    public async Task Delete(Guid id)
     {
-        _context.Set<T>().Remove(entity);
-        _context.SaveChanges();
+        var entity = await _context.Set<T>().FindAsync(id);
+        if (entity is not null)
+        {
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
+        }
     }
-    
+
 }
