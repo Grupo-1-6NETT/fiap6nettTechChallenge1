@@ -12,9 +12,19 @@ public class Repository<T> : IRepository<T> where T : class
         _context = context;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(int? pageIndex, int? pageSize)
     {
-        return await _context.Set<T>().AsNoTracking().ToListAsync();
+        var query = _context.Set<T>()
+            .AsNoTracking()            
+            .AsQueryable();
+
+        if (pageIndex is null || pageSize is null)
+            return await query.ToListAsync();
+
+        return await query
+            .Skip((pageIndex.Value - 1) * pageSize.Value)
+            .Take(pageSize.Value)
+            .ToListAsync();
     }
 
     public async Task<T> GetByIdAsync(Guid id)

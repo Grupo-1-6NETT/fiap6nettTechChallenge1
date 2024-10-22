@@ -5,7 +5,7 @@ using CadastroApi.Repository;
 using FluentAssertions;
 using FluentValidation;
 
-namespace AdicionarContato
+namespace UnitTest
 {
     public class AdicionarContatoTests
     {

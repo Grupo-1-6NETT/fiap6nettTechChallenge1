@@ -1,52 +1,70 @@
-﻿using Moq;
-using CadastroApi.Application;
+﻿using CadastroApi.Application;
+using CadastroApi.Controllers;
 using CadastroApi.Models;
 using CadastroApi.Repository;
-using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
-namespace ListarContato
+namespace UnitTest
 {
     public class ListarContatoTests
     {
+        private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IContatoRepository> _contatoRepositoryMock;
-        private readonly ListarContatoQueryHandler _handler;
+        private readonly ContatosController _controller;
 
         public ListarContatoTests()
         {
             _contatoRepositoryMock = new Mock<IContatoRepository>();
-            _handler = new ListarContatoQueryHandler(_contatoRepositoryMock.Object);
+            _mediatorMock = new Mock<IMediator>();
+            _controller = new ContatosController(_contatoRepositoryMock.Object, _mediatorMock.Object);
         }
 
         [Fact]
-        public async Task ListarTodosContatos_DeveRetornarListaDeContatos()
+        public async Task ListarContatos_ParametrosNaoInformados_DeveRetornarTodosContatos()
         {
             var contatos = new List<Contato>
-        {
-            new Contato { Nome = "Felipe Dantas", Telefone = "999999999", DDD = "11", Email = "felipe@example.com" },
-            new Contato { Nome = "Maria Silva", Telefone = "888888888", DDD = "21", Email = "maria@example.com" }
-        };
-            _contatoRepositoryMock.Setup(repo => repo.GetAllAsync()).ReturnsAsync(contatos);
+            {
+                new() { Nome = "Batman", Telefone = "999999999", DDD = "11", Email = "batman@gotham.com" },
+                new() { Nome = "Robin", Telefone = "888888888", DDD = "21", Email = "robin@gotham.com" }
+            };
 
-            var result = await _handler.Handle(new ListarContatoQuery(), CancellationToken.None);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ListarContatoQuery>(), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(contatos);
 
-            result.Should().BeEquivalentTo(contatos); 
-            _contatoRepositoryMock.Verify(repo => repo.GetAllAsync(), Times.Once);
+            var result = await _controller.ListarContatos();
+
+            var okResultObject = Assert.IsType<OkObjectResult>(result);
+
+            Assert.Equal(contatos, okResultObject.Value);
+            
         }
 
-        [Fact]
-        public async Task ListarTodosContatos_DDDInformado_DeveRetornarListaDeContatos()
+        [Theory]
+        [InlineData("11", null, null)]        
+        [InlineData("11", 1, null)]
+        [InlineData("11", 1, 1)]
+        [InlineData(null, 1, null)]
+        [InlineData(null, 1, 1)]
+        [InlineData(null, null, 1)]
+        [InlineData(null, null, null)]
+        public async Task ListarContatos_ParametrosInformados_DeveRetornarListaFiltrada(string? ddd = null, int? pageIndex = null, int? pageSize = null)
         {
             var contatos = new List<Contato>
-        {
-            new Contato { Nome = "Batman", Telefone = "999999999", DDD = "11", Email = "batman@gotham.com" },
-            new Contato { Nome = "Robin", Telefone = "999999999", DDD = "11", Email = "robin@gotham.com" },
-        };
-            _contatoRepositoryMock.Setup(repo => repo.GetByDDDAsync(It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<int?>())).ReturnsAsync(contatos);
+            {
+                new() { Nome = "Batman", Telefone = "999999999", DDD = "11", Email = "batman@gotham.com" },
+                new() { Nome = "Robin", Telefone = "888888888", DDD = "11", Email = "robin@gotham.com" }
+            };
 
-            var result = await _handler.Handle(new ListarContatoQuery { DDD = "11"}, CancellationToken.None);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<ListarContatoQuery>(), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(contatos);
 
-            result.Should().BeEquivalentTo(contatos);
-            _contatoRepositoryMock.Verify(repo => repo.GetByDDDAsync("11", null, null), Times.Once);
+            var result = await _controller.ListarContatos(ddd, pageIndex, pageSize);
+
+            var okResultObject = Assert.IsType<OkObjectResult>(result);
+
+            Assert.Equal(contatos, okResultObject.Value);
         }
     }
 }
