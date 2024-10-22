@@ -1,24 +1,28 @@
 ﻿using CadastroApi.Application;
-using CadastroApi.Models;
+using CadastroApi.Controllers;
 using CadastroApi.Repository;
-using FluentAssertions;
+using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace UnitTest
 {
     public class AtualizarContatoTests
     {
+        private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IContatoRepository> _contatoRepositoryMock;
-        private readonly AtualizarContatoCommandHandler _handler;
+        private readonly ContatosController _controller;
 
         public AtualizarContatoTests()
         {
             _contatoRepositoryMock = new Mock<IContatoRepository>();
-            _handler = new AtualizarContatoCommandHandler(_contatoRepositoryMock.Object);            
+            _mediatorMock = new Mock<IMediator>();
+            _controller = new ContatosController(_contatoRepositoryMock.Object,_mediatorMock.Object);            
         }
 
         [Fact]
-        public async Task AtualizarContato_DeveAtualizarContato()
+        public async Task AtualizarContato_InformadoIdExistente_DeveAtualizarContato()
         {
             var contatoId = Guid.NewGuid();
 
@@ -31,31 +35,60 @@ namespace UnitTest
                 Email = "batman@gotham.com"
             };
 
-            var result = await _handler.Handle(command, CancellationToken.None);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AtualizarContatoCommand>(), It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(contatoId);
 
-            result.Should().Be(contatoId);
+            var result = await _controller.AtualizarContato(command);
 
-            _contatoRepositoryMock.Verify(repo => repo.UpdateContatoAsync(It.IsAny<Contato>()), Times.Once);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+
+            Assert.Equal($"Contato com Id {contatoId} atualizado com sucesso.", okResult.Value);
         }
 
         [Fact]
-        public async Task AtualizarContato_DeveGerarErro_ArgumentException()
+        public async Task AtualizarContato_InformadoIdInexistente_DeveRetornarNotFound()
         {
+            var contatoId = Guid.NewGuid();
+
             var command = new AtualizarContatoCommand
             {
+                ID = contatoId,
                 Nome = "Batman",
                 DDD = "99",
                 Telefone = "999999999",
                 Email = "batman@gotham.com"
             };
 
-            _contatoRepositoryMock.Setup(repo => repo.UpdateContatoAsync(It.IsAny<Contato>())).ThrowsAsync(new ArgumentException());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AtualizarContatoCommand>(), It.IsAny<CancellationToken>()))
+                     .ThrowsAsync(new KeyNotFoundException());
 
-            var act = async () => await _handler.Handle(command, CancellationToken.None);
+            var result = await _controller.AtualizarContato(command);
 
-            await act.Should().ThrowAsync<ArgumentException>();
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
 
-            _contatoRepositoryMock.Verify(repo => repo.UpdateContatoAsync(It.IsAny<Contato>()), Times.Once);
+            Assert.Equal($"Id: {command.ID} não encontrado na base de dados.", notFoundResult.Value);
+        }
+
+        [Fact]
+        public async Task AtualizarContato_InformadoDadosInvalidos_DeveRetornarBadRequest()
+        {
+            var contatoId = Guid.NewGuid();
+
+            var command = new AtualizarContatoCommand
+            {
+                ID = contatoId,
+                Nome = "Batman",
+                DDD = "99",
+                Telefone = "999999999",
+                Email = "notavalidemail"
+            };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AtualizarContatoCommand>(), It.IsAny<CancellationToken>()))
+                     .ThrowsAsync(new ValidationException(""));
+
+            var result = await _controller.AtualizarContato(command);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         }
     }
 }

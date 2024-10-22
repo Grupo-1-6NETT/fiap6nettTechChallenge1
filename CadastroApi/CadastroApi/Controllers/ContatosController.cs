@@ -1,6 +1,8 @@
 ﻿using CadastroApi.Application;
+using CadastroApi.Application.Extensions;
 using CadastroApi.Application.RemoverContato;
 using CadastroApi.Repository;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +30,8 @@ public class ContatosController : ControllerBase
     /// <returns>A lista de Contatos correspodentes à pesquisa</returns>
     /// <response code="200">Pesquisa realizada com sucesso</response>
     /// <response code="500">Erro inesperado</response>
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
     [HttpGet]
     public async Task<IActionResult> ListarContatos(string? ddd = null, int? pagina = null, int? resultadosPorPagina = null)
     {
@@ -43,22 +47,42 @@ public class ContatosController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Adiciona um Contato na base de dados 
+    /// </summary>
+    /// <remarks>
+    /// Exemplo:
+    /// 
+    ///  {
+    ///     "nome": "João",
+    ///     "telefone": "988994199",
+    ///     "ddd": "11",
+    ///     "email": "joao@gmail.com"
+    /// }
+    /// </remarks>
+    /// <param name="command">Comando com os dados do Contato</param>
+    /// <returns>O Id do Contato adicionado</returns>
+    /// <response code="201">Contato adicionado na base de dados</response>
+    /// <response code="400">Falha ao processar a requisição</response>
+    /// <response code="500">Erro inesperado</response>
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     [HttpPost]
     public async Task<IActionResult> AdicionarContato([FromBody] AdicionarContatoCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         try
         {
             var contatoId = await _mediator.Send(command);
-            return Ok(new { Id = contatoId });
+            return Created("", contatoId);
         }
-        catch (ArgumentException ex)
+        catch (ValidationException ex)
         {
-            return BadRequest(new { Error = ex.Message });
+            return BadRequest(ex.ToResultMessage());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Error = "Ocorreu um erro inesperado.", Details = ex.Message });
         }
     }
 
@@ -80,20 +104,31 @@ public class ContatosController : ControllerBase
     /// <returns>O Id do Contato atualizado</returns>
     /// <response code="200">Contato atualizado na base de dados</response>
     /// <response code="400">Falha ao processar a requisição</response>
+    /// <response code="404">Contato não encontrado</response>
+    /// <response code="500">Erro inesperado</response>
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     [HttpPatch]
     public async Task<IActionResult> AtualizarContato([FromBody] AtualizarContatoCommand command)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         try
         {
             var contatoId = await _mediator.Send(command);
-            return Ok(new { Id = contatoId });
+            return Ok($"Contato com Id {contatoId} atualizado com sucesso.");
         }
-        catch (ArgumentException ex)
+        catch(KeyNotFoundException)
         {
-            return BadRequest(new { Error = ex.Message });
+            return NotFound($"Id: {command.ID} não encontrado na base de dados.");
+        }
+        catch (ValidationException ex)
+        {
+            return BadRequest(ex.ToResultMessage());
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Error = "Ocorreu um erro inesperado.", Details = ex.Message });
         }
     }
 

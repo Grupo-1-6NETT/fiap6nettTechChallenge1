@@ -35,11 +35,6 @@ public class ContatoRepository : Repository<Contato>, IContatoRepository
 
     public async Task UpdateContatoAsync(Contato contato)
     {
-        var contatoToUpdate = await _context.Contatos.AsNoTracking().Where(c => c.Id == contato.Id).FirstOrDefaultAsync();
-
-        if (contatoToUpdate == null)
-            throw new ArgumentException($"Id: {contato.Id} não encontrado na base de dados.");
-
         _context.Contatos.Update(contato);
         await _context.SaveChangesAsync();
     }

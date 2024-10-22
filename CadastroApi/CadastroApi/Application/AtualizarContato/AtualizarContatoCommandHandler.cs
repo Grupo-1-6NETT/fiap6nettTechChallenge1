@@ -17,14 +17,15 @@ namespace CadastroApi.Application
         {
             command.Validate();
 
-            var contato = new Contato
-            {
-                Id = command.ID,
-                Nome = command.Nome,
-                Telefone = command.Telefone,
-                DDD = command.DDD,
-                Email = command.Email,
-            };
+            var contato = await _contatoRepository.GetByIdAsync(command.ID);
+
+            if (contato is null)
+                throw new KeyNotFoundException();
+
+            contato.Nome = command.Nome;
+            contato.Telefone = command.Telefone;
+            contato.DDD = command.DDD;
+            contato.Email = command.Email;
 
             await _contatoRepository.UpdateContatoAsync(contato);
 
