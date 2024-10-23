@@ -140,6 +140,9 @@ public class ContatosController : ControllerBase
     /// <response code="200">Contato removido com sucesso</response>
     /// <response code="404">Contato não encontrado</response>
     /// <response code="500">Erro inesperado</response>
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemoverContato(Guid id)
     {
