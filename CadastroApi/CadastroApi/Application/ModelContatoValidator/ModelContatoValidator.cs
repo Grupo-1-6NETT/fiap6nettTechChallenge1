@@ -20,6 +20,7 @@ namespace CadastroApi.Application
             RuleFor(c => c.DDD)
                 .NotEmpty().WithMessage("DDD é obrigatório")
                 .Length(2).WithMessage("DDD deve ter 2 dígitos")
+                .Must(ddd => int.TryParse(ddd, out int result) && result >= 11 && result <= 99).WithMessage("DDD deve estar entre 11 e 99")
                 .When(c => !(c is AtualizarContatoCommand) || !string.IsNullOrWhiteSpace(c.DDD));
 
             RuleFor(c => c.Email)
