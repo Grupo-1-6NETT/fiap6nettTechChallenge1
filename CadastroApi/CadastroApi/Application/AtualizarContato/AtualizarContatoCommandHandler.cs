@@ -22,10 +22,10 @@ namespace CadastroApi.Application
             if (contato is null)
                 throw new KeyNotFoundException();
 
-            contato.Nome = command.Nome;
-            contato.Telefone = command.Telefone;
-            contato.DDD = command.DDD;
-            contato.Email = command.Email;
+            if (!string.IsNullOrWhiteSpace(command.Nome)) contato.Nome = command.Nome;
+            if (!string.IsNullOrWhiteSpace(command.Telefone)) contato.Telefone = command.Telefone;
+            if (!string.IsNullOrWhiteSpace(command.DDD)) contato.DDD = command.DDD;
+            if (!string.IsNullOrWhiteSpace(command.Email)) contato.Email = command.Email;
 
             await _contatoRepository.UpdateContatoAsync(contato);
 
