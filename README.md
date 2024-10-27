@@ -49,7 +49,7 @@ dotnet ef database update
 dotnet run
 ```
 
-A API estará disponível em [https://localhost:5001](https://localhost:7239/) por padrão.
+A API estará disponível em [https://localhost:7239](https://localhost:7239/) por padrão.
 
 ## Endpoints da API
 ### Autenticação e Registro de Usuários
