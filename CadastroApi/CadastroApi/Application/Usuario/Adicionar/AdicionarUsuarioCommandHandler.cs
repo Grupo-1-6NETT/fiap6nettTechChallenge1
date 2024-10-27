@@ -1,8 +1,7 @@
-﻿using CadastroApi.Enums;
-using CadastroApi.Models;
+﻿using CadastroApi.Models;
 using CadastroApi.Repository;
 
-namespace CadastroApi.Application.AdicionarUsuario
+namespace CadastroApi.Application
 {
     public class AdicionarUsuarioCommandHandler
     {

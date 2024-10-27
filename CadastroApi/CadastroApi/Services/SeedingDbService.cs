@@ -43,8 +43,8 @@ namespace CadastroApi.Services
 
             var passwordHash = new PasswordHasher<object>();
 
-            var u1 = new Usuario { Nome = "ApiAdmin", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User1"), Permissao = Enums.UsuarioPermissao.Admin };
-            var u2 = new Usuario { Nome = "ApiUser", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User2"), Permissao = Enums.UsuarioPermissao.ReadOnly };
+            var u1 = new Usuario { Nome = "ApiAdmin", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User1"), Permissao = Enums.TipoUsuarioPermissao.Admin };
+            var u2 = new Usuario { Nome = "ApiUser", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User2"), Permissao = Enums.TipoUsuarioPermissao.ReadOnly };
 
             _context.AddRange(u1, u2);
             _context.SaveChanges();

@@ -9,6 +9,6 @@ namespace CadastroApi.Models
         public Guid Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Senha { get; set; } = string.Empty;        
-        public UsuarioPermissao Permissao { get;set; }
+        public TipoUsuarioPermissao Permissao { get;set; }
     }
 }

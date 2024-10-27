@@ -10,7 +10,7 @@ namespace CadastroApi.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;        
-        
+
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -18,11 +18,6 @@ namespace CadastroApi.Services
 
         public string GetToken(Usuario usuario)
         {
-            //var dbUser = await _usuarioRepository.GetUserAsync(usuario.Nome, usuario.Senha);
-
-            //if (dbUser is null)
-            //    return string.Empty;
-
             var handler = new JwtSecurityTokenHandler();
             var secret = _configuration.GetValue<string>("Secret");            
 

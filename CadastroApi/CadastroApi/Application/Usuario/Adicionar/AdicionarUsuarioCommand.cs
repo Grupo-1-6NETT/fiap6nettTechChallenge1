@@ -2,13 +2,13 @@
 using CadastroApi.Enums;
 using FluentValidation;
 
-namespace CadastroApi.Application.AdicionarUsuario
+namespace CadastroApi.Application
 {
     public class AdicionarUsuarioCommand
     {
         public string Nome { get; set; } = string.Empty;
         public string Senha { get; set; } = string.Empty;
-        public UsuarioPermissao? Permissao { get; set; }
+        public TipoUsuarioPermissao? Permissao { get; set; }
 
         public void Validate()
         {

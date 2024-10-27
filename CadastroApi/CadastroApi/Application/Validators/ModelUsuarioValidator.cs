@@ -1,5 +1,4 @@
-﻿using CadastroApi.Application.AdicionarUsuario;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace CadastroApi.Application.Validators
 {
