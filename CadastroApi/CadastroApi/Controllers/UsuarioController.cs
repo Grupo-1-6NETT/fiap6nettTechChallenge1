@@ -1,8 +1,10 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Application.Extensions;
+using CadastroApi.Enums;
 using CadastroApi.Repository;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CadastroApi.Controllers;
@@ -44,6 +46,7 @@ public class UsuarioController : ControllerBase
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(500)]
+    [Authorize(Roles =UsuarioPermissao.Admin)]
     [HttpPost]
     public async Task<IActionResult> AdicionarUsuario([FromBody] AdicionarUsuarioCommand command)
     {
@@ -78,6 +81,7 @@ public class UsuarioController : ControllerBase
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
+    [Authorize(Roles = UsuarioPermissao.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemoverUsuario(Guid id)
     {
