@@ -1,11 +1,10 @@
-﻿namespace CadastroApi.Application
+﻿namespace CadastroApi.Application;
+
+public class RemoverUsuarioCommand
 {
-    public class RemoverUsuarioCommand
+    public Guid UsuarioId { get; }
+    public RemoverUsuarioCommand(Guid id)
     {
-        public Guid UsuarioId { get; }
-        public RemoverUsuarioCommand(Guid id)
-        {
-            UsuarioId = id;
-        }        
-    }
+        UsuarioId = id;
+    }        
 }

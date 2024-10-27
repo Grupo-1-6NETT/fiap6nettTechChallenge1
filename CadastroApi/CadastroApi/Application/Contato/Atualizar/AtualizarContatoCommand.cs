@@ -1,10 +1,9 @@
 ﻿using FluentValidation;
 using MediatR;
 
-namespace CadastroApi.Application
+namespace CadastroApi.Application;
+
+public class AtualizarContatoCommand : AdicionarContatoCommand
 {
-    public class AtualizarContatoCommand : AdicionarContatoCommand
-    {
-        public Guid ID { get; set; }
-    }   
-}
+    public Guid ID { get; set; }
+}   

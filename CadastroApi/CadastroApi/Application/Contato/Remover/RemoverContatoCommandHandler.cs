@@ -1,6 +1,7 @@
-﻿using CadastroApi.Application.RemoverContato;
-using CadastroApi.Repository;
+﻿using CadastroApi.Repository;
 using MediatR;
+
+namespace CadastroApi.Application;
 
 public class RemoveContactCommandHandler : IRequestHandler<RemoverContatoCommand, Guid>
 {

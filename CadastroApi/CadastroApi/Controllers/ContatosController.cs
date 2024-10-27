@@ -1,6 +1,5 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Application.Extensions;
-using CadastroApi.Application.RemoverContato;
 using CadastroApi.Enums;
 using CadastroApi.Repository;
 using FluentValidation;

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace CadastroApi.Application.Validators
+namespace CadastroApi.Application
 {
     public class ModelUsuarioValidator: AbstractValidator<AdicionarUsuarioCommand>
     {

@@ -3,33 +3,32 @@ using CadastroApi.Repository;
 using MediatR;
 using FluentValidation;
 
-namespace CadastroApi.Application
+namespace CadastroApi.Application;
+
+public class AdicionarContatoCommandHandler : IRequestHandler<AdicionarContatoCommand, Guid>
 {
-    public class AdicionarContatoCommandHandler : IRequestHandler<AdicionarContatoCommand, Guid>
+    private readonly IContatoRepository _contatoRepository;
+
+    public AdicionarContatoCommandHandler(IContatoRepository contatoRepository)
     {
-        private readonly IContatoRepository _contatoRepository;
+        _contatoRepository = contatoRepository;
+    }
 
-        public AdicionarContatoCommandHandler(IContatoRepository contatoRepository)
+    public async Task<Guid> Handle(AdicionarContatoCommand command, CancellationToken cancellationToken)
+    {
+        command.Validate();
+
+        var contato = new Contato
         {
-            _contatoRepository = contatoRepository;
-        }
+            Id = Guid.NewGuid(),
+            Nome = command.Nome,
+            Telefone = command.Telefone,
+            DDD = command.DDD,
+            Email = command.Email,
+        };
 
-        public async Task<Guid> Handle(AdicionarContatoCommand command, CancellationToken cancellationToken)
-        {
-            command.Validate();
+        await _contatoRepository.AddContatoAsync(contato);
 
-            var contato = new Contato
-            {
-                Id = Guid.NewGuid(),
-                Nome = command.Nome,
-                Telefone = command.Telefone,
-                DDD = command.DDD,
-                Email = command.Email,
-            };
-
-            await _contatoRepository.AddContatoAsync(contato);
-
-            return contato.Id;
-        }
+        return contato.Id;
     }
 }
