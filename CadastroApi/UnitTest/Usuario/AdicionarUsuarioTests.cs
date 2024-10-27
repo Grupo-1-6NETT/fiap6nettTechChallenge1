@@ -38,8 +38,8 @@ public class AdicionarUsuarioTests
        
         var result = await _controller.AdicionarUsuario(command);
 
-        var okResult = Assert.IsType<CreatedResult>(result);
-        Assert.Equal(usuarioId, okResult.Value);
+        var createdResult = Assert.IsType<CreatedResult>(result);
+        Assert.Equal(usuarioId, createdResult.Value);
     }
 
     [Fact]
@@ -58,6 +58,6 @@ public class AdicionarUsuarioTests
 
         var result = await _controller.AdicionarUsuario(command);
 
-        var okResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.IsType<BadRequestObjectResult>(result);
     }
 }
