@@ -54,7 +54,7 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
-            "Insira o token JWT (somente o token) abaixo. Exemplo: 'meuToken123'",
+            "Insira o token JWT (com prefixo Bearer) abaixo. Exemplo: 'Bearer meuToken123'",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,

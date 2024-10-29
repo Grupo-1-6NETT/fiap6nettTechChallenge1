@@ -1,8 +1,9 @@
 ﻿using CadastroApi.Repository;
+using MediatR;
 
 namespace CadastroApi.Application;
 
-public class RemoverUsuarioCommandHandler
+public class RemoverUsuarioCommandHandler : IRequestHandler<RemoverUsuarioCommand, Guid>
 {
     private readonly IUsuarioRepository _usuarioRepository;
 
