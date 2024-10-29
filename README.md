@@ -36,8 +36,19 @@ Este projeto sugere uma solução para o Tech Challenge da Fase 1 do curso de p�
       "SQLiteConnection": "Data Source=Data/Cadastro.db"
     }
   ```
+**3. Adicione o Secret em appsettings.{env}.json**
 
-**3. Execute as migrações para criar o banco de dados:**
+Crie uma chave para criptografia de senhas (secret) e adicione no appsettings do ambiente que estiver rodando.  
+Por exempo, em ambiente de desenvolvimento, adicione a propriedade em `appsettings.Development.json`.  
+O secret deve ter ao menos 256 bytes.
+
+
+```json
+
+"Secret":"ITISASECRETFOREVERYONE256B..."
+```
+
+**4. Execute as migrações para criar o banco de dados:**
 
 ```bash
 dotnet ef database update
