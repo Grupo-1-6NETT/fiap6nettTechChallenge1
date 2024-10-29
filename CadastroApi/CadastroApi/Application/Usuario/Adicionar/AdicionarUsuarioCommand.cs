@@ -1,9 +1,10 @@
 ﻿using CadastroApi.Enums;
 using FluentValidation;
+using MediatR;
 
 namespace CadastroApi.Application;
 
-public class AdicionarUsuarioCommand
+public class AdicionarUsuarioCommand : IRequest<Guid>
 {
     public string Nome { get; set; } = string.Empty;
     public string Senha { get; set; } = string.Empty;

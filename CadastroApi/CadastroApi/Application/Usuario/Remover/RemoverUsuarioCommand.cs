@@ -1,6 +1,8 @@
-﻿namespace CadastroApi.Application;
+﻿using MediatR;
 
-public class RemoverUsuarioCommand
+namespace CadastroApi.Application;
+
+public class RemoverUsuarioCommand : IRequest<Guid>
 {
     public Guid UsuarioId { get; }
     public RemoverUsuarioCommand(Guid id)

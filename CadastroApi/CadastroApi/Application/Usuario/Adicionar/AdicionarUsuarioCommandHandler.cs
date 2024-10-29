@@ -1,9 +1,10 @@
 ﻿using CadastroApi.Models;
 using CadastroApi.Repository;
+using MediatR;
 
 namespace CadastroApi.Application;
 
-public class AdicionarUsuarioCommandHandler
+public class AdicionarUsuarioCommandHandler : IRequestHandler<AdicionarUsuarioCommand, Guid>
 {
     private readonly IUsuarioRepository _usuarioRepository;
 
