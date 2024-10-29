@@ -1,9 +1,10 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Application.Extensions;
-using CadastroApi.Application.RemoverContato;
+using CadastroApi.Enums;
 using CadastroApi.Repository;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CadastroApi.Controllers;
@@ -29,9 +30,12 @@ public class ContatosController : ControllerBase
     /// <param name="resultadosPorPagina">Número de contatos a serem exibidos para a <paramref name="pagina"/> informada. Se não informado, todos os contatos serão exibidos</param>
     /// <returns>A lista de Contatos correspodentes à pesquisa</returns>
     /// <response code="200">Pesquisa realizada com sucesso</response>
+    /// <response code="401">Usuário não autenticado</response>    
     /// <response code="500">Erro inesperado</response>
     [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
     [ProducesResponseType(500)]
+    [Authorize(Roles = UsuarioPermissao.All)]
     [HttpGet]
     public async Task<IActionResult> ListarContatos(string? ddd = null, int? pagina = null, int? resultadosPorPagina = null)
     {
@@ -64,10 +68,15 @@ public class ContatosController : ControllerBase
     /// <returns>O Id do Contato adicionado</returns>
     /// <response code="201">Contato adicionado na base de dados</response>
     /// <response code="400">Falha ao processar a requisição</response>
+    /// <response code="401">Usuário não autenticado</response>
+    /// <response code="403">Usuário não autorizado</response>
     /// <response code="500">Erro inesperado</response>
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(500)]
+    [Authorize(Roles = UsuarioPermissao.Admin)]
     [HttpPost]
     public async Task<IActionResult> AdicionarContato([FromBody] AdicionarContatoCommand command)
     {
@@ -104,12 +113,17 @@ public class ContatosController : ControllerBase
     /// <returns>O Id do Contato atualizado</returns>
     /// <response code="200">Contato atualizado na base de dados</response>
     /// <response code="400">Falha ao processar a requisição</response>
+    /// <response code="401">Usuário não autenticado</response>
+    /// <response code="403">Usuário não autorizado</response>
     /// <response code="404">Contato não encontrado</response>
     /// <response code="500">Erro inesperado</response>
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
+    [Authorize(Roles = UsuarioPermissao.Admin)]
     [HttpPatch]
     public async Task<IActionResult> AtualizarContato([FromBody] AtualizarContatoCommand command)
     {
@@ -138,11 +152,16 @@ public class ContatosController : ControllerBase
     /// <param name="id">O ID do contato a ser removido</param>
     /// <returns>Resultado da operação de remoção</returns>
     /// <response code="200">Contato removido com sucesso</response>
+    /// <response code="401">Usuário não autenticado</response>
+    /// <response code="403">Usuário não autorizado</response>
     /// <response code="404">Contato não encontrado</response>
     /// <response code="500">Erro inesperado</response>
     [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
+    [Authorize(Roles =UsuarioPermissao.Admin)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemoverContato(Guid id)
     {
