@@ -28,7 +28,6 @@ public class TokenController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetToken(string usuario, string senha)
     {
-        // Envia a requisição pelo MediatR
         var token = await _mediator.Send(new ListarTokenQuery(usuario, senha));
 
         if (!string.IsNullOrWhiteSpace(token))
