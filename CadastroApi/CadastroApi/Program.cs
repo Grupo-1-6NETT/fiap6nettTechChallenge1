@@ -1,6 +1,8 @@
+using CadastroApi.Application;
 using CadastroApi.Data;
 using CadastroApi.Repository;
 using CadastroApi.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +49,7 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddScoped<SeedingDbService>();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 builder.Services.AddSwaggerGen(c =>
 {

@@ -1,5 +1,5 @@
-﻿using CadastroApi.Repository;
-using CadastroApi.Services;
+﻿using CadastroApi.Application;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CadastroApi.Controllers;
@@ -8,14 +8,13 @@ namespace CadastroApi.Controllers;
 [ApiController]
 public class TokenController : ControllerBase
 {
-    private readonly ITokenService _tokenService;
-    private readonly IUsuarioRepository _usuarioRepository;
+    private readonly IMediator _mediator;
 
-    public TokenController(ITokenService tokenService, IUsuarioRepository usuarioRepository)
+    public TokenController(IMediator mediator)
     {
-        _tokenService = tokenService;
-        _usuarioRepository = usuarioRepository;
+        _mediator = mediator;
     }
+
 
     /// <summary>
     /// Gera um token de autenticação para o usuário e senha informados
@@ -29,16 +28,12 @@ public class TokenController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetToken(string usuario, string senha)
     {
-        var user = await _usuarioRepository.GetUserAsync(usuario, senha);
+        // Envia a requisição pelo MediatR
+        var token = await _mediator.Send(new ListarTokenQuery(usuario, senha));
 
-        if (user is not null)
+        if (!string.IsNullOrWhiteSpace(token))
         {
-            var token = _tokenService.GetToken(user);
-
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                return Ok(token);
-            }
+            return Ok(token);
         }
 
         return Unauthorized();
