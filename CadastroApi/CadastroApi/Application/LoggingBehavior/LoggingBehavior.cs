@@ -18,21 +18,24 @@ namespace CadastroApi.Application
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Processando a requisicao: {typeof(TRequest).Name}");
-
+            await LogToFile($"Debug:\n");
             await LogToFile($"Requisicao: {typeof(TRequest).Name} - {DateTime.Now}\nData: {request}\n");
 
             try
             {
                 var response = await next();
 
+                await LogToFile($"Information:\n");
                 _logger.LogInformation($"Requisicao processada: {typeof(TRequest).Name}");
-                await LogToFile($"Resposta: {typeof(TResponse).Name} - {DateTime.Now}\nData: {response}\n");
+                //Retirado - linha mostra a resposta da requisição deixando dados vulneraveis 
+                //await LogToFile($"Resposta: {typeof(TResponse).Name} - {DateTime.Now}\nData: {response}\n");
 
                 return response;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Erro na requisicao: {typeof(TRequest).Name}");
+                await LogToFile($"Error:\n");
                 await LogToFile($"Mensagem de erro: {ex.Message}\n{ex.StackTrace}\n");
 
                 throw;

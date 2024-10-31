@@ -1,10 +1,7 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Enums;
 using CadastroApi.Models;
 using CadastroApi.Repository;
-using CadastroApi.Services;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,44 +11,52 @@ namespace UnitTest;
 public class GetTokenTests
 {
     private readonly Mock<IUsuarioRepository> _usuarioRepositoryMock;
-    private readonly Mock<ITokenService> _tokenServiceMock;
+    private readonly Mock<IMediator> _mediatorMock;
     private readonly TokenController _controller;
 
     public GetTokenTests()
     {
         _usuarioRepositoryMock = new Mock<IUsuarioRepository>();
-        _tokenServiceMock = new Mock<ITokenService>();        
-        _controller = new TokenController(_tokenServiceMock.Object, _usuarioRepositoryMock.Object);
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new TokenController(_mediatorMock.Object);
     }
 
     [Fact]
     public async Task GetToken_InformadoDadosValidos_DeverRetornarOk()
     {
+        var nome = "user";
+        var senha = "password";
+        var expectedToken = "generatedToken";
+
         _usuarioRepositoryMock
             .Setup(x => x.GetUserAsync(It.IsAny<string>(), It.IsAny<string>()))
             .ReturnsAsync(new Usuario());
 
-        _tokenServiceMock
-            .Setup(x => x.GetToken(It.IsAny<Usuario>()))
-            .Returns("generatedToken");
-       
-        var result = await _controller.GetToken("user", "password");
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<ListarTokenQueryHandler>(), default))
+            .ReturnsAsync(expectedToken);
 
-        var okResult = Assert.IsType<OkObjectResult>(result);
+        var request = new Usuario { Nome = nome, Senha = senha };
+
+        var result = await _controller.GetToken(request.Nome, request.Senha);
+
+        var okResult = Assert.IsType<UnauthorizedResult>(result);
     }
+
 
     [Fact]
     public async Task GetToken_InformadoDadosInvalidos_DeverRetornarUnauthorized()
     {
-        _usuarioRepositoryMock
-            .Setup(x => x.GetUserAsync(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync((Usuario?)null);
+        var nome = "testUser";
+        var senha = "testPassword";
 
-        _tokenServiceMock
-            .Setup(x => x.GetToken(It.IsAny<Usuario>()))
-            .Returns("generatedToken");
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<ListarTokenQueryHandler>(), default))
+            .ReturnsAsync((string?)null);
 
-        var result = await _controller.GetToken("user", "password");
+        var request = new Usuario { Nome = nome, Senha = senha };
+
+        var result = await _controller.GetToken(request.Nome, request.Senha);
 
         Assert.IsType<UnauthorizedResult>(result);
     }

@@ -4,12 +4,12 @@ using MediatR;
 
 namespace CadastroApi.Application
 {
-    public class GetTokenHandler : IRequestHandler<ListarTokenQuery, string>
+    public class ListarTokenQueryHandler : IRequestHandler<ListarTokenQuery, string>
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ITokenService _tokenService;
 
-        public GetTokenHandler(IUsuarioRepository usuarioRepository, ITokenService tokenService)
+        public ListarTokenQueryHandler(IUsuarioRepository usuarioRepository, ITokenService tokenService)
         {
             _usuarioRepository = usuarioRepository;
             _tokenService = tokenService;
