@@ -27,7 +27,7 @@ public class UsuarioRepository : Repository<Usuario>, IUsuarioRepository
         var usuario = await _context.Usuarios
             .AsNoTracking()
             .Where(u => u.Nome == nome)
-            .FirstAsync();
+            .FirstOrDefaultAsync();
 
         if (usuario is null)
             return null;
