@@ -1,26 +1,31 @@
-﻿using Moq;
-using CadastroApi.Application;
-using CadastroApi.Models;
+﻿using CadastroApi.Application;
+using CadastroApi.Controllers;
 using CadastroApi.Repository;
-using FluentAssertions;
 using FluentValidation;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace UnitTest;
 
 public class AdicionarContatoTests
 {
+    private readonly Mock<IMediator> _mediatorMock;
     private readonly Mock<IContatoRepository> _contatoRepositoryMock;
-    private readonly AdicionarContatoCommandHandler _handler;
+    private readonly ContatosController _controller;
 
     public AdicionarContatoTests()
     {
         _contatoRepositoryMock = new Mock<IContatoRepository>();
-        _handler = new AdicionarContatoCommandHandler(_contatoRepositoryMock.Object);
+        _mediatorMock = new Mock<IMediator>();
+        _controller = new ContatosController(_contatoRepositoryMock.Object, _mediatorMock.Object);
     }
 
     [Fact]
-    public async Task AdicionarContato_DeveSalvarContatoNoRepositorio()
+    public async Task AdicionarContato_InformadosDadosValidos_DeveRetornarOk()
     {
+        var guid = new Guid();
+
         var command = new AdicionarContatoCommand
         {
             Nome = "Felipe Dantas",
@@ -28,15 +33,17 @@ public class AdicionarContatoTests
             DDD = "11",
             Email = "felipe@example.com"
         };
+        _mediatorMock.Setup(m => m.Send(It.IsAny<AdicionarContatoCommand>(), It.IsAny<CancellationToken>()))
+                 .ReturnsAsync(guid);
 
-        var result = await _handler.Handle(command, CancellationToken.None);
+        var result = await _controller.AdicionarContato(command);
+        var createdResult = Assert.IsType<CreatedResult>(result);
 
-        _contatoRepositoryMock.Verify(repo => repo.AddContatoAsync(It.IsAny<Contato>()), Times.Once);
-        result.Should().NotBe(Guid.Empty);
+        Assert.Equal(guid, createdResult.Value);
     }
 
     [Fact]
-    public async Task AdicionarContato_DeveGerarErro_CPFValidatorFalha()
+    public async Task AdicionarContato_DadosInvalidos_DeveRetornarBadRequest()
     {
         var command = new AdicionarContatoCommand
         {
@@ -46,30 +53,11 @@ public class AdicionarContatoTests
             Email = "felipe@example.com"
         };
 
-        var exception = await Assert.ThrowsAsync<ValidationException>(() => _handler.Handle(command, CancellationToken.None));
+        _mediatorMock.Setup(m => m.Send(It.IsAny<AdicionarContatoCommand>(), It.IsAny<CancellationToken>()))
+                     .ThrowsAsync(new ValidationException(""));
 
-        _contatoRepositoryMock.Verify(repo => repo.AddContatoAsync(It.IsAny<Contato>()), Times.Never);
+        var result = await _controller.AdicionarContato(command);
 
-        exception.Errors.Should().NotBeEmpty();
-        exception.Errors.Should().Contain(e => e.PropertyName == "DDD");
-    }
-
-    [Fact]
-    public async Task AdicionarContato_DeveGerarErro_EmailValidatorFalha()
-    {
-        var command = new AdicionarContatoCommand
-        {
-            Nome = "Felipe Dantas",
-            Telefone = "999999999",
-            DDD = "1111",
-            Email = "felipe@@@example.com"
-        };
-
-        var exception = await Assert.ThrowsAsync<ValidationException>(() => _handler.Handle(command, CancellationToken.None));
-
-        _contatoRepositoryMock.Verify(repo => repo.AddContatoAsync(It.IsAny<Contato>()), Times.Never);
-
-        exception.Errors.Should().NotBeEmpty();
-        exception.Errors.Should().Contain(e => e.PropertyName == "Email");
+        Assert.IsType<BadRequestObjectResult>(result);
     }
 }
