@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CadastroApi.Migrations
+namespace CadastroApi.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

@@ -4,6 +4,8 @@ using CadastroApi.Domain.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CadastroApi.Domain.IToken;
+using CadastroApi.Infrastructure.Services;
 
 namespace CadastroApi.Infrastructure
 {
@@ -17,6 +19,8 @@ namespace CadastroApi.Infrastructure
             services.AddScoped<IContatoRepository, ContatoRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddSingleton<ITokenService, TokenService>();
         }
     }
 }

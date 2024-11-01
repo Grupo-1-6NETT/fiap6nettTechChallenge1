@@ -1,4 +1,4 @@
-﻿using CadastroApi.Domain.Services;
+﻿using CadastroApi.Domain.IToken;
 using CadastroApi.Domain.IRepository;
 using MediatR;
 

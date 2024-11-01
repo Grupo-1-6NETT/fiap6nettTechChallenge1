@@ -1,6 +1,6 @@
 ﻿using CadastroApi.Domain.Models;
 
-namespace CadastroApi.Domain.Services
+namespace CadastroApi.Domain.IToken
 {
     public interface ITokenService
     {

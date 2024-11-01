@@ -1,6 +1,6 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Application.Extensions;
-using CadastroApi.Enums;
+using CadastroApi.Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

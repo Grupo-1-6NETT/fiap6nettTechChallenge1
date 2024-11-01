@@ -1,5 +1,6 @@
 ﻿using CadastroApi.Infrastructure.Data;
 using CadastroApi.Domain.Models;
+using CadastroApi.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace CadastroApi.Infrastructure.Seed
@@ -43,8 +44,8 @@ namespace CadastroApi.Infrastructure.Seed
 
             var passwordHash = new PasswordHasher<object>();
 
-            var u1 = new Usuario { Nome = "ApiAdmin", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User1"), Permissao = Enums.TipoUsuarioPermissao.Admin };
-            var u2 = new Usuario { Nome = "ApiUser", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User2"), Permissao = Enums.TipoUsuarioPermissao.ReadOnly };
+            var u1 = new Usuario { Nome = "ApiAdmin", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User1"), Permissao = Domain.Enums.TipoUsuarioPermissao.Admin };
+            var u2 = new Usuario { Nome = "ApiUser", Senha = passwordHash.HashPassword(null, "P4ssw0rd#User2"), Permissao = Domain.Enums.TipoUsuarioPermissao.ReadOnly };
 
             _context.AddRange(u1, u2);
             _context.SaveChanges();

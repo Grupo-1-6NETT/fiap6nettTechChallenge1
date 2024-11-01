@@ -1,5 +1,4 @@
 using CadastroApi.Application;
-using CadastroApi.Domain.Services;
 using CadastroApi.Infrastructure;
 using CadastroApi.Infrastructure.Seed;
 using MediatR;
@@ -18,7 +17,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddSingleton<ITokenService, TokenService>();
 
 var secret = builder.Configuration.GetValue<string>("Secret");
 var key = string.IsNullOrEmpty(secret) ? null : Encoding.ASCII.GetBytes(secret);

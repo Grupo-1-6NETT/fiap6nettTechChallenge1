@@ -1,11 +1,12 @@
 ﻿using CadastroApi.Domain.Models;
+using CadastroApi.Domain.IToken;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CadastroApi.Services
+namespace CadastroApi.Infrastructure.Services
 {
     public class TokenService : ITokenService
     {
