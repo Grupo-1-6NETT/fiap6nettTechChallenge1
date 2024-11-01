@@ -41,7 +41,7 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddScoped<SeedingDbService>();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ListarTokenQueryHandler).Assembly));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 builder.Services.AddSwaggerGen(c =>

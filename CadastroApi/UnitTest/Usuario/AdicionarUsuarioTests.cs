@@ -1,7 +1,7 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Enums;
-using Domain.IRepository;
+using CadastroApi.Domain.Enums;
+using CadastroApi.Domain.IRepository;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,8 @@ public class AdicionarUsuarioTests
     {
         _usuarioRepositoryMock = new Mock<IUsuarioRepository>();
         _mediatorMock = new Mock<IMediator>();
-        _controller = new UsuarioController(_usuarioRepositoryMock.Object, _mediatorMock.Object);
+        //_controller = new UsuarioController(_usuarioRepositoryMock.Object, _mediatorMock.Object);
+        _controller = new UsuarioController(_mediatorMock.Object);
     }
 
     [Fact]
