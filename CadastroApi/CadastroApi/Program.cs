@@ -1,10 +1,9 @@
 using CadastroApi.Application;
-using CadastroApi.Data;
-using CadastroApi.Repository;
-using CadastroApi.Services;
+using CadastroApi.Domain.Services;
+using CadastroApi.Infrastructure;
+using CadastroApi.Infrastructure.Seed;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -17,12 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
-
-builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddSingleton<ITokenService, TokenService>();
 

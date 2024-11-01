@@ -1,7 +1,7 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
 using CadastroApi.Enums;
-using CadastroApi.Repository;
+using Domain.IRepository;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
