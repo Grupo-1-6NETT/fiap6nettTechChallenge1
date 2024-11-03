@@ -1,7 +1,6 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Application.Extensions;
-using CadastroApi.Enums;
-using CadastroApi.Repository;
+using CadastroApi.Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,12 +12,10 @@ namespace CadastroApi.Controllers;
 [ApiController]
 public class ContatosController : ControllerBase
 {
-    private readonly IContatoRepository _contatoRepository;
     private readonly IMediator _mediator;
 
-    public ContatosController(IContatoRepository contatoRepository, IMediator mediator)
+    public ContatosController(IMediator mediator)
     {
-        _contatoRepository = contatoRepository;
         _mediator = mediator;
     }
 

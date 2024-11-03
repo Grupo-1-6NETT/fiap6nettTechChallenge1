@@ -1,10 +1,10 @@
 ﻿using CadastroApi.Application;
-using CadastroApi.Models;
+using CadastroApi.Domain.Models;
 using CadastroApi.Controllers;
-using CadastroApi.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using CadastroApi.Domain.IRepository;
 
 namespace UnitTest;
 
@@ -18,7 +18,8 @@ public class ListarContatoTests
     {
         _contatoRepositoryMock = new Mock<IContatoRepository>();
         _mediatorMock = new Mock<IMediator>();
-        _controller = new ContatosController(_contatoRepositoryMock.Object, _mediatorMock.Object);
+        //_controller = new ContatosController(_contatoRepositoryMock.Object, _mediatorMock.Object);
+        _controller = new ContatosController(_mediatorMock.Object);
     }
 
     [Fact]

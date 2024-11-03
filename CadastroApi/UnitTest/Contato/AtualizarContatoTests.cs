@@ -1,6 +1,6 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Repository;
+using CadastroApi.Domain.IRepository;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,8 @@ public class AtualizarContatoTests
     {
         _contatoRepositoryMock = new Mock<IContatoRepository>();
         _mediatorMock = new Mock<IMediator>();
-        _controller = new ContatosController(_contatoRepositoryMock.Object,_mediatorMock.Object);            
+        //_controller = new ContatosController(_contatoRepositoryMock.Object,_mediatorMock.Object); 
+        _controller = new ContatosController(_mediatorMock.Object);            
     }
 
     [Fact]

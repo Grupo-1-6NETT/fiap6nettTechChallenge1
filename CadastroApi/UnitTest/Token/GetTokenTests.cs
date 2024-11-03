@@ -1,7 +1,7 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Models;
-using CadastroApi.Repository;
+using CadastroApi.Domain.Models;
+using CadastroApi.Domain.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

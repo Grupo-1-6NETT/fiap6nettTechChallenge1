@@ -1,10 +1,8 @@
 using CadastroApi.Application;
-using CadastroApi.Data;
-using CadastroApi.Repository;
-using CadastroApi.Services;
+using CadastroApi.Infrastructure;
+using CadastroApi.Infrastructure.Seed;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -17,14 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
-builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-builder.Services.AddSingleton<ITokenService, TokenService>();
 
 var secret = builder.Configuration.GetValue<string>("Secret");
 var key = string.IsNullOrEmpty(secret) ? null : Encoding.ASCII.GetBytes(secret);
@@ -49,7 +41,7 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddScoped<SeedingDbService>();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ListarTokenQueryHandler).Assembly));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 builder.Services.AddSwaggerGen(c =>

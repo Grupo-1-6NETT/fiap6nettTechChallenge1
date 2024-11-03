@@ -1,6 +1,6 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Repository;
+using CadastroApi.Domain.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -17,7 +17,8 @@ public class RemoverUsuarioTests
     {
         _usuarioRepositoryMock = new Mock<IUsuarioRepository>();
         _mediatorMock = new Mock<IMediator>();
-        _controller = new UsuarioController(_usuarioRepositoryMock.Object, _mediatorMock.Object);
+        //_controller = new UsuarioController(_usuarioRepositoryMock.Object, _mediatorMock.Object);
+        _controller = new UsuarioController(_mediatorMock.Object);
     }
 
     [Fact]
