@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest.Api.Usuario;
+namespace UnitTest.Api.UsuarioTests;
 
 public class AdicionarUsuarioTests
 {

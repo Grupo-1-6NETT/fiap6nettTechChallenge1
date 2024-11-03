@@ -1,11 +1,10 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Domain.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest.Api.Contato;
+namespace UnitTest.Api.ContatoTests;
 
 public class RemoverContatoTests
 {

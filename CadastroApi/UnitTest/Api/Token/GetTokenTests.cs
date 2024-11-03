@@ -1,10 +1,11 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
+using CadastroApi.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest.Api.Token;
+namespace UnitTest.Api.TokenTests;
 
 public class GetTokenTests
 {
@@ -28,7 +29,7 @@ public class GetTokenTests
             .Setup(m => m.Send(It.IsAny<ListarTokenQueryHandler>(), default))
             .ReturnsAsync(expectedToken);
 
-        var request = new CadastroApi.Domain.Models.Usuario { Nome = nome, Senha = senha };
+        var request = new Usuario { Nome = nome, Senha = senha };
 
         var result = await _controller.GetToken(request.Nome, request.Senha);
 
@@ -46,7 +47,7 @@ public class GetTokenTests
             .Setup(m => m.Send(It.IsAny<ListarTokenQueryHandler>(), default))
             .ReturnsAsync((string?)null);
 
-        var request = new CadastroApi.Domain.Models.Usuario { Nome = nome, Senha = senha };
+        var request = new Usuario { Nome = nome, Senha = senha };
 
         var result = await _controller.GetToken(request.Nome, request.Senha);
 

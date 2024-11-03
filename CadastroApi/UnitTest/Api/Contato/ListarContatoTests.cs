@@ -1,10 +1,11 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
+using CadastroApi.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest.Api.Contato;
+namespace UnitTest.Api.ContatoTests;
 
 public class ListarContatoTests
 {
@@ -20,7 +21,7 @@ public class ListarContatoTests
     [Fact]
     public async Task ListarContatos_ParametrosNaoInformados_DeveRetornarTodosContatos()
     {
-        var contatos = new List<CadastroApi.Domain.Models.Contato>
+        var contatos = new List<Contato>
         {
             new() { Nome = "Batman", Telefone = "999999999", DDD = "11", Email = "batman@gotham.com" },
             new() { Nome = "Robin", Telefone = "888888888", DDD = "21", Email = "robin@gotham.com" }
@@ -47,7 +48,7 @@ public class ListarContatoTests
     [InlineData(null, null, null)]
     public async Task ListarContatos_ParametrosInformados_DeveRetornarListaFiltrada(string? ddd = null, int? pageIndex = null, int? pageSize = null)
     {
-        var contatos = new List<CadastroApi.Domain.Models.Contato>
+        var contatos = new List<Contato>
         {
             new() { Nome = "Batman", Telefone = "999999999", DDD = "11", Email = "batman@gotham.com" },
             new() { Nome = "Robin", Telefone = "888888888", DDD = "11", Email = "robin@gotham.com" }
