@@ -1,35 +1,31 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Domain.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest;
+namespace UnitTest.Api.Usuario;
 
 public class RemoverUsuarioTests
 {
-    private readonly Mock<IMediator> _mediatorMock;
-    private readonly Mock<IUsuarioRepository> _usuarioRepositoryMock;
+    private readonly Mock<IMediator> _mediatorMock;    
     private readonly UsuarioController _controller;
 
     public RemoverUsuarioTests()
     {
-        _usuarioRepositoryMock = new Mock<IUsuarioRepository>();
-        _mediatorMock = new Mock<IMediator>();
-        //_controller = new UsuarioController(_usuarioRepositoryMock.Object, _mediatorMock.Object);
+        _mediatorMock = new Mock<IMediator>();     
         _controller = new UsuarioController(_mediatorMock.Object);
     }
 
     [Fact]
     public async Task RemoverUsuario_InformadoUsuarioExistente_DeverRetornarOk()
-    {        
+    {
         var usuarioId = Guid.NewGuid();
         var command = new RemoverUsuarioCommand(usuarioId);
 
         _mediatorMock.Setup(m => m.Send(It.IsAny<RemoverUsuarioCommand>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(usuarioId);
-       
+
         var result = await _controller.RemoverUsuario(usuarioId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);

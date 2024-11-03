@@ -1,26 +1,22 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Domain.IRepository;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest;
+namespace UnitTest.Api.Contato;
 
 public class AdicionarContatoTests
 {
-    private readonly Mock<IMediator> _mediatorMock;
-    private readonly Mock<IContatoRepository> _contatoRepositoryMock;
+    private readonly Mock<IMediator> _mediatorMock;    
     private readonly ContatosController _controller;
 
     public AdicionarContatoTests()
     {
-        _contatoRepositoryMock = new Mock<IContatoRepository>();
-        _mediatorMock = new Mock<IMediator>();
-        //_controller = new ContatosController(_contatoRepositoryMock.Object, _mediatorMock.Object);
+        _mediatorMock = new Mock<IMediator>();     
         _controller = new ContatosController(_mediatorMock.Object);
-        
+
     }
 
     [Fact]
@@ -50,8 +46,8 @@ public class AdicionarContatoTests
         var command = new AdicionarContatoCommand
         {
             Nome = "Felipe Dantas",
-            Telefone = "999999999", 
-            DDD = "1111",            
+            Telefone = "999999999",
+            DDD = "1111",
             Email = "felipe@example.com"
         };
 
