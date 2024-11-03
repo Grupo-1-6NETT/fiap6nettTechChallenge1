@@ -3,11 +3,11 @@ using MediatR;
 
 namespace CadastroApi.Application;
 
-public class RemoveContactCommandHandler : IRequestHandler<RemoverContatoCommand, Guid>
+public class RemoverContatoCommandHandler : IRequestHandler<RemoverContatoCommand, Guid>
 {
     private readonly IContatoRepository _contactRepository;
 
-    public RemoveContactCommandHandler(IContatoRepository contactRepository)
+    public RemoverContatoCommandHandler(IContatoRepository contactRepository)
     {
         _contactRepository = contactRepository;
     }
