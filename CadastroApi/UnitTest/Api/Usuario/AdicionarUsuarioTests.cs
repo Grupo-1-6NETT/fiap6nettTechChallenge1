@@ -1,31 +1,27 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
 using CadastroApi.Domain.Enums;
-using CadastroApi.Domain.IRepository;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest;
+namespace UnitTest.Api.UsuarioTests;
 
 public class AdicionarUsuarioTests
 {
-    private readonly Mock<IMediator> _mediatorMock;
-    private readonly Mock<IUsuarioRepository> _usuarioRepositoryMock;
+    private readonly Mock<IMediator> _mediatorMock;    
     private readonly UsuarioController _controller;
 
     public AdicionarUsuarioTests()
     {
-        _usuarioRepositoryMock = new Mock<IUsuarioRepository>();
-        _mediatorMock = new Mock<IMediator>();
-        //_controller = new UsuarioController(_usuarioRepositoryMock.Object, _mediatorMock.Object);
+        _mediatorMock = new Mock<IMediator>();     
         _controller = new UsuarioController(_mediatorMock.Object);
     }
 
     [Fact]
     public async Task AdicionarUsuario_InformadoDadosValidos_DeverRetornarOk()
-    {        
+    {
         var usuarioId = Guid.NewGuid();
         var command = new AdicionarUsuarioCommand
         {
@@ -36,7 +32,7 @@ public class AdicionarUsuarioTests
 
         _mediatorMock.Setup(m => m.Send(It.IsAny<AdicionarUsuarioCommand>(), It.IsAny<CancellationToken>()))
                      .ReturnsAsync(usuarioId);
-       
+
         var result = await _controller.AdicionarUsuario(command);
 
         var createdResult = Assert.IsType<CreatedResult>(result);

@@ -1,23 +1,19 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
-using CadastroApi.Domain.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest;
+namespace UnitTest.Api.ContatoTests;
 
 public class RemoverContatoTests
 {
-    private readonly Mock<IMediator> _mediatorMock;
-    private readonly Mock<IContatoRepository> _contatoRepositoryMock;
+    private readonly Mock<IMediator> _mediatorMock;    
     private readonly ContatosController _controller;
 
     public RemoverContatoTests()
     {
-        _contatoRepositoryMock = new Mock<IContatoRepository>();
-        _mediatorMock = new Mock<IMediator>();
-        //_controller = new ContatosController(_contatoRepositoryMock.Object, _mediatorMock.Object);
+        _mediatorMock = new Mock<IMediator>();     
         _controller = new ContatosController(_mediatorMock.Object);
     }
 

@@ -1,22 +1,19 @@
 ﻿using CadastroApi.Application;
 using CadastroApi.Controllers;
 using CadastroApi.Domain.Models;
-using CadastroApi.Domain.IRepository;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace UnitTest;
+namespace UnitTest.Api.TokenTests;
 
 public class GetTokenTests
 {
-    private readonly Mock<IUsuarioRepository> _usuarioRepositoryMock;
     private readonly Mock<IMediator> _mediatorMock;
     private readonly TokenController _controller;
 
     public GetTokenTests()
-    {
-        _usuarioRepositoryMock = new Mock<IUsuarioRepository>();
+    { 
         _mediatorMock = new Mock<IMediator>();
         _controller = new TokenController(_mediatorMock.Object);
     }
@@ -27,11 +24,7 @@ public class GetTokenTests
         var nome = "user";
         var senha = "password";
         var expectedToken = "generatedToken";
-
-        _usuarioRepositoryMock
-            .Setup(x => x.GetUserAsync(It.IsAny<string>(), It.IsAny<string>()))
-            .ReturnsAsync(new Usuario());
-
+     
         _mediatorMock
             .Setup(m => m.Send(It.IsAny<ListarTokenQueryHandler>(), default))
             .ReturnsAsync(expectedToken);
