@@ -33,7 +33,7 @@ Este projeto sugere uma solução para o Tech Challenge da Fase 1 do curso de p�
 
   ```json
     "ConnectionStrings": {
-      "SQLiteConnection": "Data Source=Data/Cadastro.db"
+      "SQLiteConnection": "Data Source=../Infrastructure/Data/Cadastro.db"
     }
   ```
 **3. Adicione o Secret em appsettings.{env}.json**
