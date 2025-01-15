@@ -35,15 +35,10 @@ public class UsuarioController : ControllerBase
     /// <returns>O Id do Usuário adicionado</returns>
     /// <response code="201">Usuário adicionado na base de dados</response>
     /// <response code="400">Falha ao processar a requisição</response>
-    /// <response code="401">Usuário não autenticado</response>
-    /// <response code="403">Usuário não autorizado</response>
     /// <response code="500">Erro inesperado</response>
     [ProducesResponseType(201)]
     [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(500)]
-    [Authorize(Roles =UsuarioPermissao.Admin)]
     [HttpPost]
     public async Task<IActionResult> AdicionarUsuario([FromBody] AdicionarUsuarioCommand command)
     {
