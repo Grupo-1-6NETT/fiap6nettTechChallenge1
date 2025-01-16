@@ -1,8 +1,10 @@
 using CadastroApi.Application;
 using CadastroApi.Infrastructure;
+using CadastroApi.Infrastructure.Data;
 using CadastroApi.Infrastructure.Seed;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -80,10 +82,19 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+//aplica EF migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    //popula o banco de dados em ambiente dev
     using (var scope = app.Services.CreateScope())
     {
         var seedingService = scope.ServiceProvider.GetRequiredService<SeedingDbService>();
