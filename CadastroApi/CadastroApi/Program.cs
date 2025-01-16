@@ -4,6 +4,7 @@ using CadastroApi.Infrastructure.Data;
 using CadastroApi.Infrastructure.Seed;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -87,6 +88,13 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var dbPath = "Data";
+
+    if (!Directory.Exists(dbPath))
+    {       
+        Directory.CreateDirectory(dbPath);
+    }
+
     dbContext.Database.Migrate();
 }
 
@@ -110,6 +118,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapMetrics();
+app.MapMetrics(); // cria o endpoint "/metrics"
 
 app.Run();
