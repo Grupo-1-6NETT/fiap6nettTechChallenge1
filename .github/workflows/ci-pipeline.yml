@@ -25,16 +25,16 @@ jobs:
 
       # Restaurar dependências
       - name: Restore dependencies
-        run: dotnet restore fiap6nettTechChallenge1/CadastroApi/CadastroApi.sln
+        run: dotnet restore CadastroApi/CadastroApi.sln
 
       # Compilar a solução
       - name: Build solution
-        run: dotnet build fiap6nettTechChallenge1/CadastroApi/CadastroApi.sln --no-restore --configuration Release
+        run: dotnet build CadastroApi/CadastroApi.sln --no-restore --configuration Release
 
       # Executar testes unitários
       - name: Run Unit Tests
-        run: dotnet test fiap6nettTechChallenge1/CadastroApi/UnitTest/UnitTest.csproj --no-build --configuration Release
+        run: dotnet test CadastroApi/UnitTest/UnitTest.csproj --no-build --configuration Release
 
       # Executar testes de integração
       - name: Integration Tests
-        run: dotnet test fiap6nettTechChallenge1/CadastroApi/IntegrationTest/IntegrationTest.csproj --no-build --configuration Release
+        run: dotnet test CadastroApi/IntegrationTest/IntegrationTest.csproj --no-build --configuration Release
