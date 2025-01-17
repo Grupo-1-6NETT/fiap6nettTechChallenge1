@@ -1,4 +1,3 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35303.130
@@ -22,10 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		prometheus.yml = prometheus.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTest", "IntegrationTest\IntegrationTest.csproj", "{8E2B7F15-E837-428F-BF23-76273CAE923F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTest", "IntegrationTest\IntegrationTest.csproj", "{8E2B7F15-E837-428F-BF23-76273CAE923F}"
 	ProjectSection(ProjectDependencies) = postProject
-		{2B8984B5-DE4E-49D4-8D20-36B5A2A98C98} = {2B8984B5-DE4E-49D4-8D20-36B5A2A98C98}
-		{42B6CBFC-4547-4433-926B-AF111405C21E} = {42B6CBFC-4547-4433-926B-AF111405C21E}
+		{0C0E1070-56B0-4DDA-A9B6-005A25A7B9AE} = {0C0E1070-56B0-4DDA-A9B6-005A25A7B9AE}
 	EndProjectSection
 EndProject
 Global
