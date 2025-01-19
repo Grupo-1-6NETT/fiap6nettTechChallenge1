@@ -1,10 +1,14 @@
 using CadastroApi.Application;
 using CadastroApi.Infrastructure;
+using CadastroApi.Infrastructure.Data;
 using CadastroApi.Infrastructure.Seed;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 using System.Reflection;
 using System.Text;
 
@@ -80,10 +84,26 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+//aplica EF migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var dbPath = "Data";
+
+    if (!Directory.Exists(dbPath))
+    {       
+        Directory.CreateDirectory(dbPath);
+    }
+
+    dbContext.Database.Migrate();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    //popula o banco de dados em ambiente dev
     using (var scope = app.Services.CreateScope())
     {
         var seedingService = scope.ServiceProvider.GetRequiredService<SeedingDbService>();
@@ -92,9 +112,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseHttpMetrics();
 
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapMetrics(); // cria o endpoint "/metrics"
 
 app.Run();

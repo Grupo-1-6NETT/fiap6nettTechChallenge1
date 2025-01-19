@@ -1,0 +1,40 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout do código
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Configurar o .NET SDK
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0
+
+      # Restaurar dependências
+      - name: Restore dependencies
+        run: dotnet restore CadastroApi/CadastroApi.sln
+
+      # Compilar a solução
+      - name: Build solution
+        run: dotnet build CadastroApi/CadastroApi.sln --no-restore --configuration Release
+
+      # Executar testes unitários
+      - name: Run Unit Tests
+        run: dotnet test CadastroApi/UnitTest/UnitTest.csproj --no-build --configuration Release
+
+      # Executar testes de integração
+      - name: Integration Tests
+        run: dotnet test CadastroApi/IntegrationTest/IntegrationTest.csproj --no-build --configuration Release

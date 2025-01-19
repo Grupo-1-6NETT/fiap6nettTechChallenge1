@@ -1,0 +1,36 @@
+services:
+  cadastroapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    networks:
+      monitoring:
+        ipv4_address: 192.168.0.100
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      monitoring:
+        ipv4_address: 192.168.0.101
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      monitoring:
+        ipv4_address: 192.168.0.102
+
+networks:
+  monitoring:
+    driver: bridge
+    ipam:
+        config:
+            - subnet: 192.168.0.0/24
