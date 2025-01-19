@@ -4,8 +4,8 @@ using CadastroApi.Infrastructure.Data;
 using CadastroApi.Infrastructure.Seed;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Prometheus;
@@ -15,33 +15,16 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
-
-var secret = builder.Configuration.GetValue<string>("Secret");
-var key = string.IsNullOrEmpty(secret) ? null : Encoding.ASCII.GetBytes(secret);
 
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer(x =>
-{
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+.AddJwtBearer();
 
 builder.Services.AddScoped<SeedingDbService>();
 
@@ -84,18 +67,34 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-//aplica EF migrations
-using (var scope = app.Services.CreateScope())
+var secret = builder.Configuration.GetValue<string>("Secret");
+
+var key = Encoding.ASCII.GetBytes(secret);
+var jwtBearerOptions = app.Services.GetRequiredService<IOptionsMonitor<JwtBearerOptions>>();
+jwtBearerOptions.Get(JwtBearerDefaults.AuthenticationScheme).TokenValidationParameters = new TokenValidationParameters
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var dbPath = "Data";
+    ValidateIssuerSigningKey = true,
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateIssuer = false,
+    ValidateAudience = false
 
-    if (!Directory.Exists(dbPath))
-    {       
-        Directory.CreateDirectory(dbPath);
+};
+
+//aplica EF migrations
+if (!app.Environment.IsEnvironment("Test"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var dbPath = "Data";
+
+        if (!Directory.Exists(dbPath))
+        {
+            Directory.CreateDirectory(dbPath);
+        }
+
+        dbContext.Database.Migrate();
     }
-
-    dbContext.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
@@ -121,3 +120,6 @@ app.MapControllers();
 app.MapMetrics(); // cria o endpoint "/metrics"
 
 app.Run();
+
+//Tornando publico para que os testes de integração possam referenciar esta classe
+public partial class Program { }
