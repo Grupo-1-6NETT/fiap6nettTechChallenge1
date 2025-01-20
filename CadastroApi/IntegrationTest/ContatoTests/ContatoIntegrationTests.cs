@@ -11,10 +11,8 @@ using CadastroApi.Domain.Enums;
 
 namespace IntegrationTest.ContatoTests
 {
-    public class ContatoIntegrationTests : IntegrationTestsBase
+    public class ContatoIntegrationTests(CustomWebApplicationFactory factory) : IntegrationTestsBase(factory)
     {
-        public ContatoIntegrationTests(CustomWebApplicationFactory factory) : base(factory) { }
-
         [Fact]
         public async Task Post_Contatos_UsuarioAdmin_DeveCriarNovoContato()
         {
