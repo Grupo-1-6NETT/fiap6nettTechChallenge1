@@ -1,4 +1,5 @@
 # API de Gerenciamento de Contatos
+Teste Action
 
 Esta é uma API desenvolvida em .NET Core 8 para gerenciar o cadastro de contatos. 
 Este projeto sugere uma solução para o Tech Challenge da Fase 1 do curso de pós graduação 6NETT na FIAP.
