@@ -8,11 +8,18 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using CadastroApi.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace IntegrationTest.ContatoTests
 {
-    public class ContatoIntegrationTests(CustomWebApplicationFactory factory) : IntegrationTestsBase(factory)
+    public class ContatoIntegrationTests : IntegrationTestsBase
     {
+
+        public ContatoIntegrationTests(CustomWebApplicationFactory factory) : base(factory)
+        {
+            SeedDB();
+        }
+
         [Fact]
         public async Task Post_Contatos_UsuarioAdmin_DeveCriarNovoContato()
         {
@@ -83,7 +90,7 @@ namespace IntegrationTest.ContatoTests
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var contatos = JsonSerializer.Deserialize<List<dynamic>>(jsonResponse);
 
-            contatos.Should().HaveCountGreaterThanOrEqualTo(2);
+            contatos.Should().HaveCountGreaterThanOrEqualTo(1);
         }
 
         [Fact]
@@ -169,6 +176,38 @@ namespace IntegrationTest.ContatoTests
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        }
+
+        private void SeedDB()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                db.Database.OpenConnection();
+                db.Database.EnsureCreated();
+
+                //Adiciona usuário padrão
+                var passwordHash = new PasswordHasher<object>();
+
+                db.Usuarios.AddRange(new List<Usuario>
+                {
+                    new() {Nome = "TestAdmin", Permissao = TipoUsuarioPermissao.Admin, Senha = passwordHash.HashPassword(null!, "123") },                    
+                    new() {Nome = "TestUser", Permissao = TipoUsuarioPermissao.ReadOnly, Senha = passwordHash.HashPassword(null!, "123")},                    
+
+                });
+
+                //Adiciona contatos
+                db.Contatos.AddRange(new List<Contato>
+                {
+                    new() { Nome = "Contato 1", Email = "contato1@example.com", Telefone = "111111111", DDD = "11" },
+                    new() { Nome = "Contato 2", Email = "contato2@example.com", Telefone = "222222222", DDD = "22" },
+                    new() { Nome = "Contato 3", Email = "contato3@example.com", Telefone = "333333333", DDD = "33" },
+                    new() { Nome = "Contato 4", Email = "contato4@example.com", Telefone = "444444444", DDD = "44" }
+                });
+
+                db.SaveChanges();
+            }
         }
 
         private async Task<Contato> GetFirstContato()

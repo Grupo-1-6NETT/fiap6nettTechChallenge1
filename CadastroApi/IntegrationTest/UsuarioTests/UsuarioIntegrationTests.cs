@@ -3,6 +3,7 @@ using CadastroApi.Domain.Models;
 using CadastroApi.Infrastructure.Data;
 using FluentAssertions;
 using IntegrationTest.Integration;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
@@ -11,8 +12,13 @@ using System.Text.Json;
 
 namespace IntegrationTest.UsuarioTests
 {
-    public class UsuarioIntegrationTests(CustomWebApplicationFactory factory) : IntegrationTestsBase(factory)
+    public class UsuarioIntegrationTests : IntegrationTestsBase
     {
+        public UsuarioIntegrationTests(CustomWebApplicationFactory factory) : base(factory)
+        {
+            SeedDB();
+        }
+
         [Fact]
         public async Task Post_AdicionarUsuario_NaoAutenticado_DeveCriarNovoUsuario()
         {
@@ -86,6 +92,31 @@ namespace IntegrationTest.UsuarioTests
             var usuario = await context.Usuarios.FirstOrDefaultAsync(u => u.Id == usuarioId);
 
             usuario.Should().BeNull();            
+        }
+
+        private void SeedDB()
+        {
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                db.Database.OpenConnection();
+                db.Database.EnsureCreated();
+
+                //Adiciona usuário padrão
+                var passwordHash = new PasswordHasher<object>();
+
+                db.Usuarios.AddRange(new List<Usuario>
+                {
+                    new() {Nome = "TestAdmin", Permissao = CadastroApi.Domain.Enums.TipoUsuarioPermissao.Admin, Senha = passwordHash.HashPassword(null!, "123") },
+                    new() {Nome = "TestAdmin2", Permissao = CadastroApi.Domain.Enums.TipoUsuarioPermissao.Admin, Senha = passwordHash.HashPassword(null!, "123") },
+                    new() {Nome = "TestUser", Permissao = CadastroApi.Domain.Enums.TipoUsuarioPermissao.ReadOnly, Senha = passwordHash.HashPassword(null!, "123")},
+                    new() {Nome = "TestUser2", Permissao = CadastroApi.Domain.Enums.TipoUsuarioPermissao.ReadOnly, Senha = passwordHash.HashPassword(null!, "123")},
+
+                });
+
+                db.SaveChanges();
+            }
         }
 
         private async Task<Usuario> GetFirstUsuario()
