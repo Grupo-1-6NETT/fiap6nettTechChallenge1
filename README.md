@@ -4,7 +4,6 @@ Esta é uma API desenvolvida em .NET Core 8 para gerenciar o cadastro de contato
 Este projeto sugere uma solução para o Tech Challenge da Fase 2 do curso de pós graduação 6NETT na FIAP.
 
 
-
 ## Índice
 - [Pré-requisitos](#pré-requisitos)
 - [Configuração do Projeto](#configuração-do-projeto)
