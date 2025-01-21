@@ -28,9 +28,17 @@ services:
       monitoring:
         ipv4_address: 192.168.0.102
 
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    networks:
+      monitoring:
+        ipv4_address: 192.168.0.103
+
 networks:
   monitoring:
     driver: bridge
     ipam:
         config:
-            - subnet: 192.168.0.0/24
+          - subnet: 192.168.0.0/24
